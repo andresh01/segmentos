@@ -18,15 +18,24 @@ document.getElementById("previousPage").addEventListener("click", function () {
   cargarSegmentosFavoritos(page - 1, per_page);
 });
 
+document
+  .getElementById("btnSearchSegment")
+  .addEventListener("click", function () {
+    var table = document.querySelector(".tableSegments");
+    table.innerHTML = "";
+    var name = document.getElementById("searchSegment").value;
+    buscarSegmento(name);
+  });
+
 // Función para cargar la información del usuario
 async function cargarDatosUsuario() {
   try {
     const response = await fetch("/api/userinfo");
     const result = await response.json();
-    
+
     let icon = document.getElementById("icon_link");
-    icon.setAttribute('href', `https://strava.com/athletes/${result.id}` );
-    
+    icon.setAttribute("href", `https://strava.com/athletes/${result.id}`);
+
     // Mostrar la información del usuario
     weight = result.weight;
 
@@ -71,6 +80,7 @@ async function cargarSegmentosFavoritos(pag, per_page) {
     } else document.getElementById("previousPage").style.display = "none";
 
     var table = document.querySelector(".tableSegments");
+
     result.forEach((value) => {
       var tr = document.createElement("tr");
       tr.innerHTML = `<tr> 
@@ -158,6 +168,49 @@ async function infoSegmento(id) {
     // Enfocar el input de minutes
     minutes.focus();
     watts();
+  } catch (error) {
+    console.error("Error al cargar la información del segmento:", error);
+  }
+}
+
+async function buscarSegmento(name) {
+  try {
+    const query = await fetch(`/api/userSegmentsStarred?page=1&per_page=200`);
+    const queryResult = await query.json();
+    if (queryResult.length == per_page) {
+      document.getElementById("nextPage").style.display = "block";
+    } else document.getElementById("nextPage").style.display = "none";
+    if (page > 1) {
+      document.getElementById("previousPage").style.display = "block";
+    } else document.getElementById("previousPage").style.display = "none";
+
+    var table = document.querySelector(".tableSegments");
+    if (name.trim() === "") {
+      cargarSegmentosFavoritos(page, per_page);
+    } else {
+      const segmento = queryResult.filter((segment) =>
+        segment.name.toLowerCase().includes(name.toLowerCase())
+      );
+
+      if (segmento.length > 0) {
+        segmento.forEach((value) => {
+          var tr = document.createElement("tr");
+          tr.innerHTML = `<tr> 
+          <td><button onclick="infoSegmento(${value.id})">${value.name}</button></td> 
+          </tr>`;
+          table.appendChild(tr);
+        });
+        document
+          .querySelector(".containerTable")
+          .setAttribute("style", "height: auto; ");
+      } else {
+        var tr = document.createElement("tr");
+        tr.innerHTML = `<tr> 
+          <td>Upss parece que ${name} no existe</td> 
+          </tr>`;
+        table.appendChild(tr);
+      }
+    }
   } catch (error) {
     console.error("Error al cargar la información del segmento:", error);
   }

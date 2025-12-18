@@ -32,6 +32,10 @@
     <main>
         <div style="text-align: center;">
             <h3>Segmentos Favoritos</h3>
+            <div>
+                <input type="text" id="searchSegment" placeholder="Buscar segmento">
+                <input type="button" value="Buscar" id="btnSearchSegment">
+            </div>
             <div class="containerTable">
                 <table class="tableSegments">
 
@@ -112,5 +116,22 @@
         height: 48px;
         width: 48px;
         background: url(//badges.strava.com/echelon-sprite-48.png) no-repeat 0 0;
+    }
+
+    #searchSegment {
+        border-radius: 5px;
+        border-style: solid;
+        border-color: #cc6d00;
+        
+    }
+
+    #btnSearchSegment {
+        border-radius: 5px;
+        border-style: solid;
+        border-color: #cc6d00;
+        background-color: #c58c11;
+        color: white;
+        padding: 5px 10px;
+        cursor: pointer;
     }
 </style>
