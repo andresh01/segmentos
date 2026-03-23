@@ -39,7 +39,7 @@ async function refreshAccessToken(req) {
 
 // Ruta para iniciar el proceso de autenticación con Strava
 app.get("/auth/strava", (req, res) => {
-  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI}&scope=read,activity:read_all`;
+  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI}&scope=read_all,activity:read_all,profile:read_all`;
   res.redirect(authUrl);
 });
 
