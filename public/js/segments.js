@@ -390,35 +390,44 @@ function renderElevationChart(container, distances, altitudes) {
   const maxAlt = Math.max(...altitudes);
   const altRange = maxAlt - minAlt || 1;
 
+  // Grado de inclinación en cada punto (diferencia central), solo para
+  // colorear el trazo y mostrarlo en el tooltip — el alto del gráfico
+  // siempre representa la altitud real, para que se vea el perfil de
+  // la subida tal cual es (no un electrocardiograma de pendientes).
+  const grades = distances.map((d, i) => {
+    const prevIdx = Math.max(0, i - 1);
+    const nextIdx = Math.min(distances.length - 1, i + 1);
+    const dDist = distances[nextIdx] - distances[prevIdx];
+    const dAlt = altitudes[nextIdx] - altitudes[prevIdx];
+    return dDist > 0 ? (dAlt / dDist) * 100 : 0;
+  });
+
   const toX = (d) => padding.left + (d / maxDist) * plotWidth;
   const toY = (a) => padding.top + plotHeight - ((a - minAlt) / altRange) * plotHeight;
 
   // Construir el path de la línea y calcular el color de cada tramo según la pendiente local
-  let linePoints = "";
+  let areaLinePoints = "";
   let segmentsHtml = "";
   for (let i = 0; i < distances.length; i++) {
     const x = toX(distances[i]);
     const y = toY(altitudes[i]);
-    linePoints += `${x.toFixed(2)},${y.toFixed(2)} `;
+    areaLinePoints += `${x.toFixed(2)},${y.toFixed(2)} `;
 
     if (i > 0) {
-      const dDist = distances[i] - distances[i - 1];
-      const dAlt = altitudes[i] - altitudes[i - 1];
-      const grade = dDist > 0 ? (dAlt / dDist) * 100 : 0;
-      const color = gradeToColor(grade);
       const x0 = toX(distances[i - 1]);
       const y0 = toY(altitudes[i - 1]);
+      const color = gradeToColor(grades[i]);
       segmentsHtml += `<line x1="${x0.toFixed(2)}" y1="${y0.toFixed(2)}" x2="${x.toFixed(2)}" y2="${y.toFixed(2)}" stroke="${color}" stroke-width="2.5" stroke-linecap="round" />`;
     }
   }
 
-  const areaPoints = `${padding.left},${padding.top + plotHeight} ${linePoints} ${toX(maxDist).toFixed(2)},${padding.top + plotHeight}`;
+  const areaPoints = `${toX(distances[0]).toFixed(2)},${(padding.top + plotHeight).toFixed(2)} ${areaLinePoints} ${toX(maxDist).toFixed(2)},${(padding.top + plotHeight).toFixed(2)}`;
 
   const svg = `
     <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="elevFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#fc4c02" stop-opacity="0.35" />
+          <stop offset="0%" stop-color="#fc4c02" stop-opacity="0.32" />
           <stop offset="100%" stop-color="#fc4c02" stop-opacity="0" />
         </linearGradient>
       </defs>
@@ -475,7 +484,7 @@ function renderElevationChart(container, distances, altitudes) {
     tooltip.style.left = `${(x / width) * 100}%`;
     tooltip.style.top = `${(y / height) * 100}%`;
     tooltip.querySelector(".tt-dist").textContent = `${(distances[closestIdx] / 1000).toFixed(2)} km`;
-    tooltip.querySelector(".tt-elev").textContent = `${altitudes[closestIdx].toFixed(0)} m`;
+    tooltip.querySelector(".tt-elev").textContent = `${grades[closestIdx].toFixed(1)}%`;
   }
 
   capture.addEventListener("mousemove", (e) => handleMove(e.clientX));
