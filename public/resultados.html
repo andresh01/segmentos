@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados · Segmentos</title>
+    <link rel="shortcut icon" href="./img/mountain_orange.png">
+    <link rel="stylesheet" href="./css/shared.css">
+    <link rel="stylesheet" href="./css/resultados.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="./img/mountain_orange.png" alt="Logo">
+                
+            </div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link" href="./segments.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                    Segmentos
+                </a>
+                <a class="sidebar-link active" href="./resultados.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 9-9"/><path d="M14 7h7v7"/></svg>
+                    Resultados
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a class="sidebar-link" href="/logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                    Cerrar sesión
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">Resultados guardados</div>
+                <div class="topbar-user">
+                    <div class="topbar-user-meta">
+                        <strong id="userName">&nbsp;</strong>
+                        <span id="userLocation"></span>
+                    </div>
+                    <img alt="profile" id="picture">
+                </div>
+            </header>
+
+            <main class="content">
+                <div class="stat-grid">
+                    <div class="card stat-card">
+                        <div class="stat-label">Resultados guardados</div>
+                        <div class="stat-value accent" id="statTotal">0</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-label">Mejor w/kg</div>
+                        <div class="stat-value" id="statBestWkg">—</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-label">Segmento más calculado</div>
+                        <div class="stat-value" id="statTopSegment" style="font-size:16px;">—</div>
+                    </div>
+                </div>
+
+                <div class="card elevation-motif" style="padding: 18px 20px 34px; margin-bottom: 20px;">
+                    <h3 class="section-title">Filtrar y ordenar</h3>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <input type="text" id="filterInput" class="input" placeholder="Filtrar por nombre de segmento" style="flex:1; min-width:200px;">
+                        <select id="sortSelect" class="input" style="cursor:pointer;">
+                            <option value="recent">Más reciente</option>
+                            <option value="oldest">Más antiguo</option>
+                            <option value="watts_desc">Mayor watts</option>
+                            <option value="wkg_desc">Mayor w/kg</option>
+                            <option value="name">Nombre (A-Z)</option>
+                        </select>
+                        <button class="btn btn-ghost" id="btnClearAll">Borrar todo</button>
+                    </div>
+                </div>
+
+                <div id="resultsGrid" class="results-grid"></div>
+
+                <div id="emptyState" class="empty-state" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-5 4 4 9-9"/><path d="M14 7h7v7"/></svg>
+                    <h3>Todavía no guardas resultados</h3>
+                    <p>Abre un segmento desde el Dashboard, calcula tu tiempo objetivo y pulsa "Guardar resultado" para verlo aquí.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-card card">
+            <button class="modal-close" id="modalClose">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="js/resultados.js"></script>
+</body>
+
+</html>

@@ -4,134 +4,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información de Usuario</title>
+    <title>Dashboard · Segmentos</title>
     <link rel="shortcut icon" href="./img/mountain_orange.png">
+    <link rel="stylesheet" href="./css/shared.css">
     <link rel="stylesheet" href="./css/user.css">
 </head>
 
 <body>
-    <header class="header">
-        <div class="header_container">
-            <div class="userPicture">
-                <img alt="profile" id="picture">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="./img/mountain_orange.png" alt="Logo">
+                
             </div>
-            <div class="userInfo">
-                <div class="divName">
-                    <h2 id="userName"><!-- javascript --></h2>
-                </div>
-                <div id="userList">
-                    <!-- javascript -->
-                </div>
-                <div class="icon">
-                    <a id="icon_link" class="strava-badge- strava-badge-follow" target="_blank"><img
-                            src="//badges.strava.com/echelon-sprite-48.png" alt="Strava" /></a>
-                </div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link active" href="./segments.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="9" rx="1.5" />
+                        <rect x="14" y="3" width="7" height="5" rx="1.5" />
+                        <rect x="14" y="12" width="7" height="9" rx="1.5" />
+                        <rect x="3" y="16" width="7" height="5" rx="1.5" />
+                    </svg>
+                    Segmentos
+                </a>
+                <a class="sidebar-link" href="./resultados.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 17l5-5 4 4 9-9" />
+                        <path d="M14 7h7v7" />
+                    </svg>
+                    Resultados
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a class="sidebar-link" href="/logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <path d="M16 17l5-5-5-5" />
+                        <path d="M21 12H9" />
+                    </svg>
+                    Cerrar sesión
+                </a>
             </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">Informacion</div>
+                <div class="topbar-user">
+                    <div class="topbar-user-meta">
+                        <strong id="userName">&nbsp;</strong>
+                        <span id="userLocation"></span>
+                    </div>
+                    <a id="icon_link" target="_blank" title="Ver en Strava">
+                        <img alt="profile" id="picture">
+                        <!-- <img src="//badges.strava.com/echelon-sprite-48.png" alt="Strava" class="strava-badge-img" /> -->
+                    </a>
+                </div>
+            </header>
+
+            <main class="content">
+                <div class="stat-grid">
+                    <div class="card stat-card">
+                        <div class="stat-label">Peso registrado</div>
+                        <div class="stat-value accent" id="statWeight">—</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-label">Bicicletas</div>
+                        <div class="stat-value" id="statBikes">—</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-label">Página actual</div>
+                        <div class="stat-value" id="statPage">—</div>
+                    </div>
+                </div>
+
+                <div id="userList" class="hidden-data"></div>
+
+                <div class="card elevation-motif" style="padding: 18px 20px 34px; margin-bottom: 20px;">
+                    <h3 class="section-title">Segmentos favoritos</h3>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <input type="text" id="searchSegment" class="input" placeholder="Buscar segmento por nombre"
+                            style="flex:1; min-width:200px;">
+                        <input type="button" value="Buscar" id="btnSearchSegment" class="btn btn-primary">
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 18px 20px;">
+                    <div class="containerTable">
+                        <table class="tableSegments">
+                        </table>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 16px; margin-top: 10px;">
+                        <a id="previousPage" class="changePage" style="display: none;">← Atrás</a>
+                        <a id="nextPage" class="changePage" style="display: none;">Siguiente →</a>
+                    </div>
+                </div>
+
+                <div class="container2">
+                    <div class="containerInfoSegmento card">
+                        <div id="segmentName"></div>
+                        <div>
+                            <ul id="list">
+                            </ul>
+                        </div>
+                        <div class="containerProfile">
+                            <div id="elevationChart" class="elevation-chart-wrap"></div>
+                            <img alt="" id="profile" style="display:none;">
+                        </div>
+                    </div>
+                    <div id="info" class="card">
+                        <div id="datoTime">
+                            <div>
+                                <h2 style="margin: 10px 0px 0px 0px;">Tiempo objetivo:</h2>
+                            </div>
+                            <div id="timeContainer">
+                                <span><input class="inp_timeObj" type="text" value="hh">:<input class="inp_timeObj"
+                                        type="text" value="mm"></span>
+                                <span><input type="number" min="0" id="hour" value="" placeholder="0"><span
+                                        style="font-size:20px;">:</span><input type="number" min="0"
+                                        id="minutes"></span>
+                            </div>
+                        </div>
+                        <div id="datoW_kg">
+                            <div>
+                                <h2>w/kg: <input type="text" id="valw_kg" value=""></h2>
+                            </div>
+                        </div>
+                        <div id="datoW">
+                            <div>
+                                <h2>watts: <span id="watts"> </span></h2>
+                            </div>
+                        </div>
+                        <div id="datoVam">
+                            <div>
+                                <h2>vam: <span id="vam"> </span></h2>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="btnGuardarResultado"
+                            style="margin-top: 10px; width: 100%;">Guardar resultado</button>
+                        <div id="guardadoMsg"
+                            style="font-size:12px; color: var(--accent-green); margin-top:8px; display:none;">Resultado
+                            guardado ✓ <a href="resultados.html" style="text-decoration:underline;">Verlo en
+                                Resultados</a></div>
+                    </div>
+                </div>
+            </main>
         </div>
-    </header>
-    <main>
-        <div style="text-align: center;">
-            <h3>Segmentos Favoritos</h3>
-            <div>
-                <input type="text" id="searchSegment" placeholder="Buscar segmento">
-                <input type="button" value="Buscar" id="btnSearchSegment">
-            </div>
-            <div class="containerTable">
-                <table class="tableSegments">
-
-                </table>
-            </div>
-            <div style="display: flex; justify-content: center; justify-content: space-around;">
-                <a id="previousPage" class="changePage" style="display: none;">Atras</a>
-                <a id="nextPage" class="changePage" style="display: none;">Siguiente</a>
-            </div>
-
-            <!-- <select name="climbs" id="climbs" style="width: 200px;">
-                <option value="">Seleccione</option>
-            </select> -->
-        </div>
-        <div class="container2">
-            <div class="containerInfoSegmento">
-                <div id="segmentName"></div>
-                <div>
-                    <ul id="list">
-                    </ul>
-                </div>
-                <div class="containerProfile">
-                    <img alt="" id="profile">
-                </div>
-            </div>
-            <div id="info">
-                <div id="datoTime">
-                    <div >
-                        <h2 style="margin: 10px 0px 0px 0px;">Tiempo objetivo:</h2>
-                    </div>
-                    <div id="timeContainer">
-                        <span><input class="inp_timeObj" type="text" value="hh">:<input class="inp_timeObj" type="text" value="mm"></span>
-                        <span><input type="number" min="0" id="hour" value="" placeholder="0"><span style="font-size:20px;">:</span><input type="number" min="0" id="minutes"></span>
-                    </div>
-                </div>
-                <div id="datoW_kg">
-                    <div>
-                        <h2>w/kg: <input type="text" id="valw_kg" value=""></h2>
-                    </div>
-                </div>
-                <div id="datoW">
-                    <div>
-                        <h2>watts: <span id="watts"> </span></h2>
-                    </div>
-                </div>
-                <div id="datoVam">
-                    <div>
-                        <h2>vam: <span id="vam"> </span></h2>
-                    </div>
-                </div>
-            </div>
-            <div>
-
-            </div>
-        </div>
-
-    </main>
+    </div>
     <script src="js/segments.js"></script>
 </body>
 
 </html>
-<style>
-    .strava-badge- {
-        display: inline-block;
-        height: 48px;
-    }
-
-    .strava-badge- img {
-        visibility: hidden;
-        height: 48px;
-    }
-
-    .strava-badge-:hover {
-        background-position: 0 -63px;
-    }
-
-    .strava-badge-follow {
-        height: 48px;
-        width: 48px;
-        background: url(//badges.strava.com/echelon-sprite-48.png) no-repeat 0 0;
-    }
-
-    #searchSegment {
-        border-radius: 5px;
-        border-style: solid;
-        border-color: #cc6d00;
-        
-    }
-
-    #btnSearchSegment {
-        border-radius: 5px;
-        border-style: solid;
-        border-color: #cc6d00;
-        background-color: #c58c11;
-        color: white;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-</style>

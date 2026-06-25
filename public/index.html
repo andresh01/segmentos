@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login User</title>
+    <title>Iniciar sesión · Segmentos</title>
+    <link rel="stylesheet" href="./css/shared.css">
     <link rel="stylesheet" href="./css/login.css">
     <link rel="shortcut icon" href="./img/mountain_orange.png">
 </head>
 <body>
-    <fieldset class="container">
-        <div>
-            <h1>INICIO DE SESION</h1>
-        </div>
-        <div >
-            <button class="boton" id="loginStrava">Iniciar sesión con Strava</button>
-        </div>
-    </fieldset>
+    <div class="login-card">
+        <div class="elevation-strip"></div>
+        <img class="login-logo" src="./img/mountain_orange.png" alt="Logo">
+        <div class="eyebrow">Panel de segmentos</div>
+        <h1>Inicia sesión</h1>
+        <p class="subtitle">Conecta tu cuenta de Strava para ver tus segmentos favoritos y calcular tus objetivos de potencia y tiempo.</p>
+        <button class="boton" id="loginStrava">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+            Iniciar sesión con Strava
+        </button>
+        <div class="login-footnote">Tus datos se obtienen directamente desde la API oficial de Strava.</div>
+    </div>
     <script src="js/login.js"></script>
 </body>
 </html>
-
