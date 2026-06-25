@@ -1,0 +1,171 @@
+/* Página de Resultados */
+
+#picture {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-orange);
+    object-fit: cover;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+.result-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.15s ease, transform 0.1s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.result-card:hover {
+    border-color: var(--accent-orange);
+    transform: translateY(-2px);
+}
+
+.result-card .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.result-card .result-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.result-card .result-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+}
+
+.result-card .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.result-card .result-stat {
+    text-align: center;
+    background-color: var(--bg-surface-alt);
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+}
+
+.result-card .result-stat .label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.result-card .result-stat .value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent-orange);
+    font-size: 15px;
+    margin-top: 2px;
+}
+
+.result-card .delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    line-height: 1;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.result-card .delete-btn:hover {
+    color: #ff5b5b;
+    background-color: rgba(255, 91, 91, 0.12);
+}
+
+/* Modal de detalle */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(10, 11, 14, 0.65);
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 380px;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-card h2 {
+    font-family: var(--font-display);
+    font-size: 19px;
+    margin: 0 0 14px 0;
+    padding-right: 20px;
+}
+
+.modal-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+}
+
+.modal-card li {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-card li:last-child {
+    border-bottom: none;
+}
+
+.modal-card li span:last-child {
+    color: var(--accent-gold);
+    font-weight: 600;
+}

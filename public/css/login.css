@@ -1,61 +1,103 @@
+/* Página de login — hero centrado con motivo de elevación */
+
 body {
-    display: flex;
-    font-family: Arial, sans-serif;
-    background-color: #494343;
-    justify-content: center;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(circle at 18% 20%, rgba(252, 76, 2, 0.08), transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(255, 178, 63, 0.06), transparent 45%);
+  padding: 24px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 60%;
-    background-color: rgb(0, 0, 0);
-    color: #f4f4f4;
-    position: absolute;
-    top: 35%;
-    border-radius: 5px;
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 36px 32px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.container h1 {
-    padding: 15px 15px 0px 15px;
+.login-card .elevation-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
+}
+
+.login-logo {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+}
+
+.login-card .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.login-card h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.login-card p.subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin: 0 0 28px 0;
+  line-height: 1.5;
 }
 
 .boton {
-    padding: 10px 20px;
-    background-color: #fc5200;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 15px;
-    margin-bottom: 10px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 20px;
+  background-color: var(--accent-orange);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-
-.hidden {
-    display: none;
+.boton:hover {
+  background-color: #e64500;
 }
 
-/* Tablets */
-@media (min-width: 1024px) {
-    .container {
-        width: 50%;
-    }
+.boton:active {
+  transform: scale(0.98);
 }
 
-/* PC */
-@media (min-width: 1024px) {
-    .container {
-        width: 40%;
-    }
+.boton svg {
+  width: 18px;
+  height: 18px;
 }
 
-/* Desk */
-@media (min-width: 1200px) {
-    .container {
-        width: 30%;
-    }
+.login-footnote {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--text-muted);
 }
