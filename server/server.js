@@ -21,7 +21,8 @@ app.use(
 // Servir los archivos estáticos (HTML, CSS, JS) desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, "../public")));
 
-// Función para renovar el access_token
+// Función para renovar el access_token. Devuelve true/false según el resultado,
+// para que cada ruta decida cómo reaccionar (en vez de asumir que siempre funcionó).
 async function refreshAccessToken(req) {
   try {
     const response = await axios.post("https://www.strava.com/oauth/token", {
@@ -32,14 +33,16 @@ async function refreshAccessToken(req) {
     });
     req.session.accessToken = response.data.access_token;
     req.session.refreshToken = response.data.refresh_token; // Actualiza el refresh_token si es necesario
+    return true;
   } catch (error) {
     console.error("Error al renovar el token de acceso:", error);
+    return false;
   }
 }
 
 // Ruta para iniciar el proceso de autenticación con Strava
 app.get("/auth/strava", (req, res) => {
-  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI}&scope=read,activity:read_all`;
+  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI}&scope=read,activity:read_all,profile:read_all`;
   res.redirect(authUrl);
 });
 
@@ -89,9 +92,22 @@ app.get("/api/userinfo", async (req, res) => {
     res.json(userInfoResponse.data);
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // Token expirado, intentar renovarlo
-      await refreshAccessToken(req);
-      return res.redirect("/api/userinfo"); // Reintentar la solicitud
+      // Token expirado: intentamos renovarlo y reintentamos la misma
+      // petición aquí mismo (sin redirigir, para no depender de
+      // variables que ya no existen ni arriesgar un bucle de redirects).
+      const renovado = await refreshAccessToken(req);
+      if (!renovado) {
+        return res.status(401).json({ error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
+      try {
+        const retryResponse = await axios.get(
+          "https://www.strava.com/api/v3/athlete",
+          { headers: { Authorization: `Bearer ${req.session.accessToken}` } }
+        );
+        return res.json(retryResponse.data);
+      } catch (retryError) {
+        return res.status(401).json({ error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
     }
     res.status(500).json({ error: "Error al obtener la información" });
   }
@@ -131,9 +147,11 @@ app.get("/api/segmentInfo", async (req, res) => {
       .json({ status_code: 401, error: "Usuario no autenticado" });
   }
 
-  try {
-    const { id } = req.query;
+  // `id` se saca del query ANTES del try/catch para que esté disponible
+  // también dentro del catch (ver explicación del bug más abajo).
+  const { id } = req.query;
 
+  try {
     // Solicitud para obtener la información del segmento
     const oneStarredSegmentResponse = await axios.get(
       `https://www.strava.com/api/v3/segments/${id}`,
@@ -148,11 +166,69 @@ app.get("/api/segmentInfo", async (req, res) => {
     res.json(oneStarredSegmentResponse.data);
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // Token expirado, intentar renovarlo
-      await refreshAccessToken(req);
-      return res.redirect(`/api/segmentInfo?id=${id}`); // Reintentar la solicitud
+      // Token expirado: renovamos y reintentamos la misma petición aquí
+      // mismo, en vez de redirigir al cliente (evita el ReferenceError
+      // de `id` y un posible bucle de redirects).
+      const renovado = await refreshAccessToken(req);
+      if (!renovado) {
+        return res
+          .status(401)
+          .json({ status_code: 401, error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
+      try {
+        const retryResponse = await axios.get(
+          `https://www.strava.com/api/v3/segments/${id}`,
+          { headers: { Authorization: `Bearer ${req.session.accessToken}` } }
+        );
+        return res.json(retryResponse.data);
+      } catch (retryError) {
+        return res
+          .status(401)
+          .json({ status_code: 401, error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
     }
     res.status(500).json({ error: "Error al obtener la información" });
+  }
+});
+
+// Ruta para obtener el perfil de elevación real del segmento (distancia + altitud)
+// usado para dibujar el gráfico interactivo en el frontend.
+app.get("/api/segmentStreams", async (req, res) => {
+  if (!req.session.accessToken) {
+    return res.status(401).json({ error: "Usuario no autenticado" });
+  }
+
+  const { id } = req.query;
+
+  try {
+    const streamsResponse = await axios.get(
+      `https://www.strava.com/api/v3/segments/${id}/streams`,
+      {
+        params: { keys: "distance,altitude", key_by_type: true },
+        headers: { Authorization: `Bearer ${req.session.accessToken}` },
+      }
+    );
+    res.json(streamsResponse.data);
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      const renovado = await refreshAccessToken(req);
+      if (!renovado) {
+        return res.status(401).json({ error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
+      try {
+        const retryResponse = await axios.get(
+          `https://www.strava.com/api/v3/segments/${id}/streams`,
+          {
+            params: { keys: "distance,altitude", key_by_type: true },
+            headers: { Authorization: `Bearer ${req.session.accessToken}` },
+          }
+        );
+        return res.json(retryResponse.data);
+      } catch (retryError) {
+        return res.status(401).json({ error: "Sesión expirada, vuelve a iniciar sesión" });
+      }
+    }
+    res.status(500).json({ error: "Error al obtener el perfil de elevación" });
   }
 });
 
